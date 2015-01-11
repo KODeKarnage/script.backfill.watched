@@ -8,7 +8,7 @@ show_request = '{"jsonrpc": "2.0", \
 	{"properties": ["genre", "title", "playcount", "mpaa", "watchedepisodes", "episode"]}, \
 "id": "allTVShows"}'
 raw_shows = xbmc.executeJSONRPC(show_request)
-shows_raw_shows['result']['tvshows']
+shows = raw_shows['result']['tvshows']
 
 #retrieve all TV episodes
 episode_request = '{"jsonrpc": "2.0", \
