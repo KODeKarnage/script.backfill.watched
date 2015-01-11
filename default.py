@@ -1,5 +1,6 @@
 
 import xbmc
+import json
 
 #retrieve all TV Shows
 show_request = '{"jsonrpc": "2.0", \
@@ -7,8 +8,9 @@ show_request = '{"jsonrpc": "2.0", \
 "params": \
 	{"properties": ["genre", "title", "playcount", "mpaa", "watchedepisodes", "episode"]}, \
 "id": "allTVShows"}'
-raw_shows = xbmc.executeJSONRPC(show_request)
+raw_shows = json.loads(xbmc.executeJSONRPC(show_request))
 shows = raw_shows['result']['tvshows']
+
 
 #retrieve all TV episodes
 episode_request = '{"jsonrpc": "2.0", \
@@ -16,12 +18,12 @@ episode_request = '{"jsonrpc": "2.0", \
 "params": \
 	{"properties": ["season","episode","runtime", "resume","playcount", "tvshowid", "lastplayed", "file"]}, \
 "id": "allTVEpisodes"}'
-raw_eps = xbmc.executeJSONRPC(episode_request)
+raw_eps = json.loads(xbmc.executeJSONRPC(episode_request))
 eps = raw_eps['result']['episodes']
 
 all_shows = sorted(shows, key =  lambda shows: (shows['title']))
 
-tvshownames = [x['title'] for x in all_shows]
+count = 0
 ids = [x['tvshowid'] for x in all_shows]
 
 if ids:
@@ -40,6 +42,11 @@ if ids:
 
 				set_to_watched = '{"jsonrpc": "2.0", \
 				"method": "VideoLibrary.SetEpisodeDetails", \
-				"params": {"episodeid" : d, "playcount" : 1}, \
-				"id": 1}'
+				"params": {"episodeid" : %s, "playcount" : 1}, \
+				"id": 1}' % d
 				xbmc.executeJSONRPC(set_to_watched)
+
+				count += 1
+
+				if not count % 25:
+					print '%s episodes set to watched' % count
